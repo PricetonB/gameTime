@@ -6,6 +6,7 @@
 class MultiplayerScene : public Scene {
     bool _sceneChangeNeeded = false;
 public:
+    MultiplayerScene(sf::RenderWindow& wind);
     void update() override;
     std::string nextScene() override;
 };

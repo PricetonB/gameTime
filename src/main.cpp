@@ -11,7 +11,7 @@
 
 int main()
 {
-	Game* game = new Game();
+	Game* game = new Game("../../config.txt");
 
 	game->run();
 

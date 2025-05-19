@@ -1,6 +1,9 @@
 #include "MenuScene.h"
 #include <iostream>
 
+
+MenuScene::MenuScene(sf::RenderWindow& win) : Scene(win) {}
+
 void MenuScene::_changeScene(std::string sceneName) {
     _sceneChangeNeeded = true;
     _sceneToChangeTo = sceneName;

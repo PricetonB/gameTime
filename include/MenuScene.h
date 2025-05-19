@@ -11,6 +11,7 @@ class MenuScene : public Scene {
     void _changeScene(std::string sceneName);
 
 public:
+    MenuScene(sf::RenderWindow& win);
     void update() override;
     std::string nextScene() override;
 };
