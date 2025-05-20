@@ -4,11 +4,16 @@
 
 MenuScene::MenuScene(sf::RenderWindow& win) : Scene(win) {}
 
+// Inherited: sf::RenderWindow& window
+
+//private methods
 void MenuScene::_changeScene(std::string sceneName) {
     _sceneChangeNeeded = true;
     _sceneToChangeTo = sceneName;
 }
 
+
+//public methods
 void MenuScene::update() {
     std::cout << "what scene do you want to go to, play or multiplayer\n";
     std::string nextScene;
