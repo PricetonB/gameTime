@@ -1,41 +1,51 @@
-#include "PlayScene.h"
-#include <iostream>
-#include <limits>
+#include "Game.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <filesystem>
 
-
-
-PlayScene::PlayScene(sf::RenderWindow& win) : Scene(win) {
-	Init(_configFile);
+//configFile does not need to be passed in instead make a private member
+Game::Game(const std::string& configFile)
+{
+	Init(configFile);
 }
 
 
-// Inherited: sf::RenderWindow& window
 
-//private methods
-void PlayScene::_changeScene(std::string sceneName) {
-    _sceneChangeNeeded = true;
-    _sceneToChangeTo = sceneName;
+//function is only public function 
+void Game::Run()
+{
+
+	while (Window.isOpen()) {
+
+
+		ManuelSpawnFlag = true;
+
+		sUserInput();
+
+		if (IsRunning) {
+			GameFrameCount++;
+			EntityManager.Update();
+			sSpawner();
+			sMovement();
+			sRender();
+		}
+	}
+
 }
 
-//--------------------------------------------
-
-
-void PlayScene::Init(const std::string& _configFile)
+void Game::Init(const std::string& configFile)
 {
 	GameFrameCount = 0;
 	IsRunning = true;
 	
 	//Read in the config file 
-	std::fstream input{ _configFile };
+	std::fstream input{ configFile };
 
 	if (!input.is_open())
 	{
+		#include <filesystem>
         std::cout << "Current path: " << std::filesystem::current_path() << '\n';
-		std::cerr << "Failed to open: " << _configFile << '\n';
+		std::cerr << "Failed to open: " << configFile << '\n';
 		exit(-1);
 	}
 
@@ -43,8 +53,32 @@ void PlayScene::Init(const std::string& _configFile)
 	std::string identifier;
 
 	while (input >> identifier) {
+		if (identifier == "Window")
+		{
+			unsigned int width;
+			input >> width;
 
-		if (identifier == "Player") {
+			unsigned int height;
+			input >> height;
+
+			unsigned int fps;
+			input >> fps;
+
+			int fullscreen;
+			input >> fullscreen;
+
+			if (fullscreen == 1) {
+				Window.create(sf::VideoMode({width, height}), "Space War", sf::State::Windowed);
+			}
+			else {
+				auto fullScreenModes = sf::VideoMode::getFullscreenModes();
+				Window.create(fullScreenModes[0], "Space Wars", sf::State::Fullscreen);
+			}
+			// bullshit fps = 1;
+			Window.setFramerateLimit(fps);
+		}
+
+		else if (identifier == "Player") {
 			input >> PlayerSpecs.ShapeRadius;
 			input >> PlayerSpecs.CollisionRadius;
 			input >> PlayerSpecs.Speed;
@@ -101,15 +135,12 @@ void PlayScene::Init(const std::string& _configFile)
 	std::cout << "spawn interval: " << EnemySpecs.SpawnInterval << "\n";
 }
 
-//--------------------------------------------
-
-
-void PlayScene::SpawnPlayer()
+void Game::SpawnPlayer()
 {
 	//This goes slightly against the EntityManagers paradigm
 	Player = EntityManager.AddEntity("Player");
 
-	sf::Vector2f middleOfWindow{ window.getSize().x / 2.0f, window.getSize().y / 2.0f };
+	sf::Vector2f middleOfWindow{ Window.getSize().x / 2.0f, Window.getSize().y / 2.0f };
 
 	Player->cTransform = std::make_shared<CTransform>(middleOfWindow, sf::Vector2f(0.0f, 0.0f), 0.0f);
 	Player->cShape = std::make_shared<CShape>(PlayerSpecs.ShapeRadius, PlayerSpecs.ShapeVertices,
@@ -119,11 +150,8 @@ void PlayScene::SpawnPlayer()
 	Player->cSpecialShoot = std::make_shared<CSpecialShoot>(40, 60 * 10);
 }
 
-//--------------------------------------------
 
-
-
-void PlayScene::SpawnBullet(const float angle)
+void Game::SpawnBullet(const float angle)
 {
 	auto bullet = EntityManager.AddEntity("Bullet");
 	bullet->cShape = std::make_shared<CShape>(BulletSpecs.ShapeRadius, BulletSpecs.ShapeVertices,
@@ -138,11 +166,8 @@ void PlayScene::SpawnBullet(const float angle)
 
 }
 
-//--------------------------------------------
 
-
-
-void PlayScene::sMovement()
+void Game::sMovement()
 {
 	if (Player->cInput->Down) {
 		Player->cTransform->Velocity.y = PlayerSpecs.Speed;
@@ -174,12 +199,9 @@ void PlayScene::sMovement()
 	}
 }
 
-//--------------------------------------------
-
-
-void PlayScene::sRender()
+void Game::sRender()
 {
-	window.clear();
+	Window.clear();
 
 	for (auto& e : EntityManager.GetEntities()) {
 		if (e->cShape != nullptr)
@@ -188,16 +210,13 @@ void PlayScene::sRender()
 
 			e->cShape->Shape.setPosition(e->cTransform->Position);
 			e->cShape->Shape.setRotation(sf::degrees(e->cTransform->Angle));
-			window.draw(e->cShape->Shape);
+			Window.draw(e->cShape->Shape);
 		}
 	}
-	window.display();
+	Window.display();
 }
 
-//--------------------------------------------
-
-
-void PlayScene::sSpawner()
+void Game::sSpawner()
 {
 
 
@@ -218,15 +237,12 @@ void PlayScene::sSpawner()
 }
 
 
-//--------------------------------------------
-
-
-void PlayScene::sUserInput()
+void Game::sUserInput()
 {
-	while (auto event = window.pollEvent())
+	while (auto event = Window.pollEvent())
 	{
 		if (event->is<sf::Event::Closed>()) {
-			window.close();
+			Window.close();
 			continue;
 		}
 
@@ -235,7 +251,7 @@ void PlayScene::sUserInput()
 
 			switch (keyPressed->scancode) {
 			case Scan::Escape:
-				window.close();
+				Window.close();
 				break;
 			case Scan::W:
 				Player->cInput->Up = true;
@@ -298,81 +314,5 @@ void PlayScene::sUserInput()
 		}
 	}
 }
-
-
-
-
-
-//==============================================================
-
-
-
-//public methods
-void PlayScene::update() {
-
-	while (window.isOpen()) {
-
-
-		ManuelSpawnFlag = true;
-
-		sUserInput();
-
-		if (IsRunning) {
-			GameFrameCount++;
-			EntityManager.Update();
-			sSpawner();
-			sMovement();
-			sRender();
-		}
-	}
-
-}
-
-
-//--------------------------------------------
-
-
-
-std::string PlayScene::nextScene() {
-    return _sceneChangeNeeded ? _sceneToChangeTo : "";
-}
-
-
-
-//============================================================
-//ORIGINAL COPY 
-
-/*
-
-PlayScene::PlayScene(sf::RenderWindow& win) : Scene(win) {}
-
-
-// Inherited: sf::RenderWindow& window
-
-//private methods
-void PlayScene::_changeScene(std::string sceneName) {
-    _sceneChangeNeeded = true;
-    _sceneToChangeTo = sceneName;
-}
-
-
-//public methods
-void PlayScene::update() {
-    std::cout << "in play scene type menu to return to menu\n";
-    std::string nextScene;
-    std::cin >> nextScene;
-    if (nextScene != "menu" && nextScene != "multiplayer") {
-        std::cout << "scene not recognized \n";
-    } else {
-        _changeScene(nextScene);
-    }
-}
-
-std::string PlayScene::nextScene() {
-    return _sceneChangeNeeded ? _sceneToChangeTo : "";
-}
-
-*/
-
 
 

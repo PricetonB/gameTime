@@ -53,7 +53,7 @@ struct BulletSpecsStr {
 class Game
 {
 private:
-	sf::RenderWindow Window;
+	sf::RenderWindow window;
 	EntityManagerCls EntityManager;
 
 	PlayerSpecsStr PlayerSpecs;

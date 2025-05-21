@@ -3,17 +3,109 @@
 
 #include "Scene.h"
 #include <string>
+#include <cstdlib>
+#include <cmath>
+#include <SFML/Graphics.hpp>
+#include "EntityManager.h"
+
+
+
+struct MinMaxFStr {
+	float Min;
+	float Max;
+};
+
+struct MinMaxIStr {
+	size_t Min;
+	size_t Max;
+};
+
+struct PlayerSpecsStr {
+	uint16_t ShapeRadius;
+	uint16_t CollisionRadius;
+	float Speed;
+	sf::Color FillColor;
+	sf::Color OutlineColor;
+	uint16_t OutlineThickness;
+	size_t ShapeVertices;
+
+};
+
+struct EnemySpecsStr {
+	uint16_t ShapeRadius;
+	uint16_t CollisionRadius;
+	MinMaxFStr Speed;
+	sf::Color OutlineColor;
+	uint16_t OutlineThickness;
+	MinMaxIStr ShapeVertices;
+	uint16_t LifeSpan;
+	uint16_t SpawnInterval;
+};
+
+struct BulletSpecsStr {
+	uint16_t ShapeRadius;
+	uint16_t CollisionRadius;
+	float Speed;
+	sf::Color FillColor;
+	sf::Color OutlineColor;
+	uint16_t OutlineThickness;
+	size_t ShapeVertices;
+	uint16_t LifeSpan;
+};
+
+
+
 
 
 //--------------------
 
 class PlayScene : public Scene {
+
+    // Inherited: sf::RenderWindow& window
+
+	
     //private members
     bool _sceneChangeNeeded = false;
     std::string _sceneToChangeTo = "";
+    std::string _configFile = "../../config.txt";
+    EntityManagerCls EntityManager;
+    
+    PlayerSpecsStr PlayerSpecs;
+    EnemySpecsStr EnemySpecs;
+    BulletSpecsStr BulletSpecs;
+    
+    EntityPtr Player;
+    
+    size_t GameScore;
+    
+    size_t GameFrameCount;
+    
+    sf::Clock DeltaClock;
+    
+    uint16_t SpawnInterval;
+    bool ManuelSpawnFlag;
+    
+    bool IsPaused;
+    bool IsRunning;
+    
 
     //private methods
     void _changeScene(std::string sceneName);
+    void Init(const std::string& _configFile);
+    
+    void SpawnPlayer();
+    void SpawnEnemy();
+    void SpawnBullet(const float angle);
+    void SpawnSmallEnemy(std::shared_ptr<EntityCls> deadEnemy);
+    
+    void sMovement();
+    void sRender();
+    void sSpawner();
+    void sCollision();
+    void sUserInput();
+    void sLifeSpan();
+    void sSpecialShoot();
+    
 
 public:
     //constructor
@@ -25,5 +117,18 @@ public:
 };
 
 #endif
+
+
+
+
+//-------------------------------------------------------------
+//-------------------------------------------------------------
+
+
+
+
+
+
+
 
 
