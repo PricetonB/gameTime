@@ -105,6 +105,7 @@ class PlayScene : public Scene {
     void sUserInput();
     void sLifeSpan();
     void sSpecialShoot();
+    void sShoot();
     
 
 public:

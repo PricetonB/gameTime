@@ -117,6 +117,7 @@ void PlayScene::SpawnPlayer()
 	Player->cCollision = std::make_shared<CCollision>(PlayerSpecs.CollisionRadius);
 	Player->cInput = std::make_shared<CInput>();
 	Player->cSpecialShoot = std::make_shared<CSpecialShoot>(40, 60 * 10);
+	Player->cShoot = std::make_shared<CShoot>(10);
 }
 
 //--------------------------------------------
@@ -199,22 +200,7 @@ void PlayScene::sRender()
 
 void PlayScene::sSpawner()
 {
-
-
-	if (Player->cInput->Shoot) {
-		Player->cInput->Shoot = false;
-		auto playerX = Player->cTransform->Position.x;
-		auto playerY = Player->cTransform->Position.y;
-
-		auto diffX = Player->cInput->MousePos.x - playerX;
-		auto diffY = Player->cInput->MousePos.y - playerY;
-
-		auto angle = std::atan2(diffY, diffX);
-
-		SpawnBullet(angle);
-
-	}
-
+	return;
 }
 
 
@@ -223,6 +209,11 @@ void PlayScene::sSpawner()
 
 void PlayScene::sUserInput()
 {
+	//reset mouse input
+	Player->cInput->LeftClick = false;
+	Player->cInput->RightClick = false;
+
+	//check for events
 	while (auto event = window.pollEvent())
 	{
 		if (event->is<sf::Event::Closed>()) {
@@ -283,14 +274,14 @@ void PlayScene::sUserInput()
 
 			switch (mousePressed->button) {
 			case sf::Mouse::Button::Left:
-				Player->cInput->Shoot = true;
+				Player->cInput->LeftClick = true;
 				Player->cInput->MousePos = sf::Vector2f(
 					static_cast<float>(mousePressed->position.x),
 					static_cast<float>(mousePressed->position.y)
 				);
 				break;
 			case sf::Mouse::Button::Right:
-				Player->cInput->SpecialShoot = true;
+				Player->cInput->RightClick = true;
 				break;
 			default:
 				break;
@@ -298,6 +289,63 @@ void PlayScene::sUserInput()
 		}
 	}
 }
+
+
+//TODO make shoot and special shoot into one function later
+
+
+void Game::sSpecialShoot()
+{
+	if (Player->cInput->RightClick) {
+		if (Player->cSpecialShoot->RemainingCooldown == 0) {
+			// spawn many bullet
+			for (size_t i = 0; i < Player->cSpecialShoot->BulletAmount; i++)
+			{
+				float angle = (360.0f / Player->cSpecialShoot->BulletAmount) * i;
+				SpawnBullet(angle);
+			}
+
+			// set up cooldown
+			Player->cSpecialShoot->RemainingCooldown = Player->cSpecialShoot->Cooldown;
+		}
+	}
+
+	if (Player->cSpecialShoot->RemainingCooldown > 0) {
+		Player->cSpecialShoot->RemainingCooldown--;
+	}
+
+
+}
+
+
+void Game::sShoot()
+{
+	if (Player->cInput->LeftClick) {
+
+		if (Player->cShoot->RemainingCooldown == 0) {
+			// spawn bullet
+			auto playerX = Player->cTransform->Position.x;
+			auto playerY = Player->cTransform->Position.y;
+			auto diffX = Player->cInput->MousePos.x - playerX;
+			auto diffY = Player->cInput->MousePos.y - playerY;
+			auto angle = std::atan2(diffY, diffX);
+			SpawnBullet(angle);
+
+			// set up cooldown
+			Player->cShoot->RemainingCooldown = Player->cShoot->Cooldown;
+		}
+		Player->cInput->SpecialShoot = false;
+	}
+
+	if (Player->cShoot->RemainingCooldown > 0) {
+		Player->cShoot->RemainingCooldown--;
+	}
+
+
+}
+
+
+
 
 
 

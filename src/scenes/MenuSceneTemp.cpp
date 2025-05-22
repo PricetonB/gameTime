@@ -45,14 +45,13 @@ void MenuScene::Init(const std::string& _configFile)
 	while (input >> identifier) {
 
 
-
 		if (identifier == "SinglePlayerButton") {
 			input >> SinglePlayerButtonSpecs.Width;
-		        input >> SinglePlayerButtonSpecs.Height;
+			input >> SinglePlayerButtonSpecs.Height;
 			input >> SinglePlayerButtonSpecs.X
 			input >> SinglePlayerButtonSpecs.Y;
 			input >> SinglePlayerButtonSpecs.OutlineThickness
-	        	int r, g, b;
+			int r, g, b;
 			input >> r;
 			input >> g;
 			input >> b;
@@ -65,8 +64,7 @@ void MenuScene::Init(const std::string& _configFile)
 			SinglePlayerButtonSpecs.OutlineColor.r = static_cast<uint8_t>(r);
 			SinglePlayerButtonSpecs.OutlineColor.g = static_cast<uint8_t>(g);
 			SinglePlayerButtonSpecs.OutlineColor.b = static_cast<uint8_t>(b);
-
-
+		}
 
 
 		
@@ -157,24 +155,15 @@ void MenuScene::SpawnButton(float width, float height, float  x, float y, float 
 	button->cTransform = std::make_shared<CTransform>(rectanglePosition, sf::Vector2f(0.0f, 0.0f), 0.0f);
 	button->cRectangle = std::make_shared<CRectangle>(width, height, outlineThickness, outlineColor, fillColor) 
 
-
+}
 
 //---------------------------------------------
 
-//TODO this is staying as reference for movement system being used to implement what happens when buttons are clicked since it used players cinput
-//either change this function to not make the shape and just have player object or create another thing that can hold cinput. thats really all this is for is cinput
+//TODO change this to make something other than player to control menus
 void MenuScene::SpawnPlayer()
 {
-	//This goes slightly against the EntityManagers paradigm
 	Player = EntityManager.AddEntity("Player");
-
-	sf::Vector2f middleOfWindow{ window.getSize().x / 2.0f, window.getSize().y / 2.0f };
-
-	Player->cTransform = std::make_shared<CTransform>(middleOfWindow, sf::Vector2f(0.0f, 0.0f), 0.0f);
-	Player->cShape = std::make_shared<CShape>(PlayerSpecs.ShapeRadius, PlayerSpecs.ShapeVertices, PlayerSpecs.FillColor, PlayerSpecs.OutlineColor, PlayerSpecs.OutlineThickness);
-	Player->cCollision = std::make_shared<CCollision>(PlayerSpecs.CollisionRadius);
 	Player->cInput = std::make_shared<CInput>();
-	Player->cSpecialShoot = std::make_shared<CSpecialShoot>(40, 60 * 10);
 }
 
 //--------------------------------------------
@@ -182,43 +171,13 @@ void MenuScene::SpawnPlayer()
 
 void MenuScene::sMovement()
 {
-	if (Player->cInput->Down) {
-		Player->cTransform->Velocity.y = PlayerSpecs.Speed;
-	}
-	else if (Player->cInput->Up) {
-		Player->cTransform->Velocity.y = -PlayerSpecs.Speed;
-	}
-	else {
-		Player->cTransform->Velocity.y = 0;
-	}
-
-	if (Player->cInput->Right) {
-		Player->cTransform->Velocity.x = PlayerSpecs.Speed;
-	}
-	else if (Player->cInput->Left) {
-		Player->cTransform->Velocity.x = -PlayerSpecs.Speed;
-	}
-	else {
-		Player->cTransform->Velocity.x = 0;
-	}
-
-	for (auto& e : EntityManager.GetEntities()) {
-		if (e->cTransform != nullptr)
-		{
-			e->cTransform->Position.x += e->cTransform->Velocity.x;
-			e->cTransform->Position.y += e->cTransform->Velocity.y;
-
-		}
-	}
+	return;
 }
+
 
 //--------------------------------------------
 
-//TODO why the fuck is render system updating positions and rotating shapes. seems like it should just focus on drawing shapes and sprites
-//also thi will update the sf shapes position and rotation even if it has not changed. seems weird for shapes that never move in menu screen
-//makes much more sense in gameplay so maybe leave it alone
-//
-//actually im stupid the movement system updates the transform this just sends the updated trasnform to the sf shape before render:
+
 void MenuScene::sRender()
 {
 	window.clear();
@@ -251,35 +210,21 @@ void MenuScene::sRender()
 
 void MenuScene::sSpawner()
 {
-//TODO this shoot needs to be changed to left and right click in actual play scene. 
-//this should not set the left and right click to false. need to make something 
-//in this that will know the difference if mouse is down or clicked. it should only shoot
-//on clicked not on mouse down. maybe while cInput.leftMouseDown go into shoot bypass mode 
-//or just recognize the click instead of mouse being held down.
-//theres also a special shoot component maybe figure out where that is getting done and do shoot similar
-
-	if (Player->cInput->Shoot) {
-		Player->cInput->Shoot = false;
-		auto playerX = Player->cTransform->Position.x;
-		auto playerY = Player->cTransform->Position.y;
-
-		auto diffX = Player->cInput->MousePos.x - playerX;
-		auto diffY = Player->cInput->MousePos.y - playerY;
-
-		auto angle = std::atan2(diffY, diffX);
-
-		SpawnBullet(angle);
-
-	}
-
+	return;
 }
 
 
 //--------------------------------------------
 
 
+
 void MenuScene::sUserInput()
 {
+	//reset mouse input
+	Player->cInput->LeftClick = false;
+	Player->cInput->RightClick = false;
+
+	//check for events
 	while (auto event = window.pollEvent())
 	{
 		if (event->is<sf::Event::Closed>()) {
@@ -340,14 +285,14 @@ void MenuScene::sUserInput()
 
 			switch (mousePressed->button) {
 			case sf::Mouse::Button::Left:
-				Player->cInput->Shoot = true;
+				Player->cInput->LeftClick = true;
 				Player->cInput->MousePos = sf::Vector2f(
 					static_cast<float>(mousePressed->position.x),
 					static_cast<float>(mousePressed->position.y)
 				);
 				break;
 			case sf::Mouse::Button::Right:
-				Player->cInput->SpecialShoot = true;
+				Player->cInput->RightClick = true;
 				break;
 			default:
 				break;
