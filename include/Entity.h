@@ -19,6 +19,7 @@ public:
 	std::shared_ptr<CLifeSpan>     cLifeSpan	     = nullptr;
 	std::shared_ptr<CInput>        cInput            = nullptr;
 	std::shared_ptr<CSpecialShoot> cSpecialShoot     = nullptr;
+	std::shared_ptr<CRectangle>    cRectangle        = nullptr;
 
 	void Destroy();
 	const std::string & GetTag() const;

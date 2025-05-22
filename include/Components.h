@@ -11,6 +11,8 @@ public:
 		: Position(position), Velocity(velocity), Angle(angle) {}
 };
 
+//=============================================================
+
 class CShape {
 public:
 	sf::CircleShape Shape;
@@ -25,6 +27,29 @@ public:
 	}
 };
 
+//=============================================================
+
+//TODO update whatever draws Cshape to also draw Crectangele
+
+class CRectangle {
+public:
+    sf::RectangleShape Rectangle;
+
+    CRectangle(float width, float height, float thickness, const sf::Color& outlineColor, const sf::Color& fillColor ) {
+        Rectangle.setSize(sf::Vector2f(width, height);
+        Rectangle.setFillColor(fillColor);
+        Rectangle.setOutlineColor(outlineColor);
+        Rectangle.setOutlineThickness(thickness);
+        Rectangle.setOrigin(size.x / 2.f, size.y / 2.f);  // Center origin
+    }
+};
+
+
+
+//=============================================================
+
+
+
 class CScore {
 public:
 	int Score = 0;
@@ -33,6 +58,9 @@ public:
 		:Score(score) {}
 };
 
+//=============================================================
+
+
 class CCollision {
 public:
 	float Radius = 0;
@@ -40,6 +68,9 @@ public:
 	CCollision(const float radius)
 		:Radius(radius) {}
 };
+
+//=============================================================
+
 
 class CLifeSpan {
 public:
@@ -50,6 +81,9 @@ public:
 		:TotalLife(life), RemainingLife(life) {}
 };
 
+//=============================================================
+
+
 class CSpecialShoot {
 public:
 	int BulletAmount;
@@ -59,6 +93,11 @@ public:
 		:BulletAmount(bulletAmount), Cooldown(cooldown), RemainingCooldown(0){}
 };
 
+//=============================================================
+
+//TODO shoot and special shoot needs to be changed to left click and right click. 
+//it needs to then be modified in every scene that uses this input system. 
+//maybe make a shoot component like the special shoot component above:
 class CInput {
 public:
 	bool Up;
