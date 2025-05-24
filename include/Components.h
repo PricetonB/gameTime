@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
 
 class CTransform {
 public:
@@ -40,7 +41,7 @@ public:
         Rectangle.setFillColor(fillColor);
         Rectangle.setOutlineColor(outlineColor);
         Rectangle.setOutlineThickness(thickness);
-        Rectangle.setOrigin(size.x / 2.f, size.y / 2.f);  // Center origin
+        Rectangle.setOrigin(sf::Vector2f(width,height));  // Center origin
     }
 };
 
@@ -121,7 +122,7 @@ public:
 	sf::Vector2f MousePos;
 
 	CInput()
-		:Up(false), Down(false) , Left(false) , Right(false), Shoot(false), SpecialShoot(false){
+		:Up(false), Down(false) , Left(false) , Right(false), LeftClick(false), RightClick(false){
 		MousePos = sf::Vector2f(0, 0);
 	}
 };

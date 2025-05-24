@@ -294,7 +294,7 @@ void PlayScene::sUserInput()
 //TODO make shoot and special shoot into one function later
 
 
-void Game::sSpecialShoot()
+void PlayScene::sSpecialShoot()
 {
 	if (Player->cInput->RightClick) {
 		if (Player->cSpecialShoot->RemainingCooldown == 0) {
@@ -318,7 +318,7 @@ void Game::sSpecialShoot()
 }
 
 
-void Game::sShoot()
+void PlayScene::sShoot()
 {
 	if (Player->cInput->LeftClick) {
 
@@ -334,7 +334,6 @@ void Game::sShoot()
 			// set up cooldown
 			Player->cShoot->RemainingCooldown = Player->cShoot->Cooldown;
 		}
-		Player->cInput->SpecialShoot = false;
 	}
 
 	if (Player->cShoot->RemainingCooldown > 0) {

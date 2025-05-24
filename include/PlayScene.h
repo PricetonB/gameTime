@@ -7,51 +7,7 @@
 #include <cmath>
 #include <SFML/Graphics.hpp>
 #include "EntityManager.h"
-
-
-
-struct MinMaxFStr {
-	float Min;
-	float Max;
-};
-
-struct MinMaxIStr {
-	size_t Min;
-	size_t Max;
-};
-
-struct PlayerSpecsStr {
-	uint16_t ShapeRadius;
-	uint16_t CollisionRadius;
-	float Speed;
-	sf::Color FillColor;
-	sf::Color OutlineColor;
-	uint16_t OutlineThickness;
-	size_t ShapeVertices;
-
-};
-
-struct EnemySpecsStr {
-	uint16_t ShapeRadius;
-	uint16_t CollisionRadius;
-	MinMaxFStr Speed;
-	sf::Color OutlineColor;
-	uint16_t OutlineThickness;
-	MinMaxIStr ShapeVertices;
-	uint16_t LifeSpan;
-	uint16_t SpawnInterval;
-};
-
-struct BulletSpecsStr {
-	uint16_t ShapeRadius;
-	uint16_t CollisionRadius;
-	float Speed;
-	sf::Color FillColor;
-	sf::Color OutlineColor;
-	uint16_t OutlineThickness;
-	size_t ShapeVertices;
-	uint16_t LifeSpan;
-};
+#include "fileStructs.h"
 
 
 
