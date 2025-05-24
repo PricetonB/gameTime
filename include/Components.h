@@ -126,3 +126,16 @@ public:
 		MousePos = sf::Vector2f(0, 0);
 	}
 };
+
+//=============================================================
+
+
+class CButton {
+public:
+    std::function<void()> onClick;
+    bool ButtonClicked = false; //TODO DELETE THIS. WE JUST CALL ONCLICK INSTEAD OF MAKING THIS TRUE
+    float LeftSide, RightSide, TopSide, BottomSide;
+
+    CButton(float left, float right, float top, float bottom, std::function<void()> onClickFunc)
+        : LeftSide(left), RightSide(right), TopSide(top), BottomSide(bottom), onClick(onClickFunc) {}
+};

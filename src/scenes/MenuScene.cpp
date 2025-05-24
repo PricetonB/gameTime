@@ -125,7 +125,7 @@ void MenuScene::Init(const std::string& _configFile)
 
 	}
 	SpawnPlayer();
-  SpawnMenuButtons();
+    SpawnMenuButtons();
 	std::cout << "spawn interval: " << EnemySpecs.SpawnInterval << "\n";
 }
 
@@ -136,30 +136,40 @@ void MenuScene::Init(const std::string& _configFile)
 
 
 void MenuScene::SpawnMenuButtons() {
-	SpawnButton(SinglePlayerButtonSpecs.Width, SinglePlayerButtonSpecs.Height,
-             SinglePlayerButtonSpecs.X, SinglePlayerButtonSpecs.Y,
-             SinglePlayerButtonSpecs.OutlineThickness, SinglePlayerButtonSpecs.OutlineColor,
-             SinglePlayerButtonSpecs.FillColor );
-
-	//TODO call spawn button for multiplayer button and add struct etc. `
-
-
+    SpawnButton(
+        SinglePlayerButtonSpecs.Width, SinglePlayerButtonSpecs.Height,
+        SinglePlayerButtonSpecs.X, SinglePlayerButtonSpecs.Y,
+        SinglePlayerButtonSpecs.OutlineThickness, SinglePlayerButtonSpecs.OutlineColor,
+        SinglePlayerButtonSpecs.FillColor,
+        [this]() {
+            _changeScene("play");
+        }
+    );
 }
+
 
 //--------------------------------------------
 
 
-void MenuScene::SpawnButton(float width, float height, float  x, float y,
-                float outlineThickness, sf::Color outlineColor,sf::Color fillColor ) 
-{
+void MenuScene::SpawnButton(
+    float width, float height, float x, float y,
+    float outlineThickness, sf::Color outlineColor, sf::Color fillColor,
+    std::function<void()> onClickFunc
+) {
+    auto button = EntityManager.AddEntity("Button");
 
-	auto button = EntityManager.AddEntity("Button");
-	
-	sf::Vector2f rectanglePosition{ x, y };
-	button->cTransform = std::make_shared<CTransform>(rectanglePosition, sf::Vector2f(0.0f, 0.0f), 0.0f);
-	button->cRectangle = std::make_shared<CRectangle>(width, height, outlineThickness, outlineColor, fillColor);
+    sf::Vector2f rectanglePosition{ x, y };
+    button->cTransform = std::make_shared<CTransform>(rectanglePosition, sf::Vector2f(0.0f, 0.0f), 0.0f);
+    button->cRectangle = std::make_shared<CRectangle>(width, height, outlineThickness, outlineColor, fillColor);
 
+    float left = x;
+    float right = x + width;
+    float top = y;
+    float bottom = y + height;
+
+    button->cButton = std::make_shared<CButton>(left, right, top, bottom, onClickFunc);
 }
+
 
 //---------------------------------------------
 
@@ -306,10 +316,41 @@ void MenuScene::sUserInput()
 }
 
 
+//==============================================================
+
+
+
+void MenuScene::sButtonClicked()
+{
+    auto mousex = Player->cInput->MousePos.x;
+    auto mousey = Player->cInput->MousePos.y;
+
+    if (!Player->cInput->LeftClick)
+        return;  // early exit if no click
+
+    for (auto& e : EntityManager.GetEntities()) {
+        if (e->cButton != nullptr) {
+            if (mousex >= e->cButton->leftSide && mousex <= e->cButton->rightSide &&
+                mousey >= e->cButton->topSide && mousey <= e->cButton->bottomSide)
+            {
+                if (e->cButton->onClick) {
+                    e->cButton->onClick();
+                }
+                else
+                {
+                    std::cout << "Button clicked, but onClick function is empty." << std::endl;
+                }
+                break; // assuming one click triggers one button only
+            }
+        }
+    }
+}
+
 
 
 
 //==============================================================
+
 
 
 
