@@ -17,8 +17,11 @@ MenuScene::MenuScene(sf::RenderWindow& win) : Scene(win) {
 
 //private methods
 void MenuScene::_changeScene(std::string sceneName) {
+    std::cout << "changing scene in scene change \n";
     _sceneChangeNeeded = true;
     _sceneToChangeTo = sceneName;
+    std::cout << "scene change needed: " << _sceneChangeNeeded 
+    << "scene to change too: " << _sceneToChangeTo << "\n";
 }
 
 //--------------------------------------------
@@ -299,6 +302,7 @@ void MenuScene::sUserInput()
 
 			switch (mousePressed->button) {
 			case sf::Mouse::Button::Left:
+        std::cout << "left click in input system \n";
 				Player->cInput->LeftClick = true;
 				Player->cInput->MousePos = sf::Vector2f(
 					static_cast<float>(mousePressed->position.x),
@@ -328,12 +332,16 @@ void MenuScene::sButtonClicked()
     if (!Player->cInput->LeftClick)
         return;  // early exit if no click
 
+    std::cout << "detected in button system \n";
     for (auto& e : EntityManager.GetEntities()) {
         if (e->cButton != nullptr) {
-            if (mousex >= e->cButton->leftSide && mousex <= e->cButton->rightSide &&
-                mousey >= e->cButton->topSide && mousey <= e->cButton->bottomSide)
+            std::cout << "pointer is not null \n";
+            if (mousex >= e->cButton->LeftSide && mousex <= e->cButton->RightSide &&
+                mousey >= e->cButton->TopSide && mousey <= e->cButton->BottomSide)
             {
+                std::cout << "click in range \n";
                 if (e->cButton->onClick) {
+                    std::cout << "onClick method available \n";
                     e->cButton->onClick();
                 }
                 else
@@ -357,11 +365,7 @@ void MenuScene::sButtonClicked()
 //public methods
 void MenuScene::update() {
 
-	while (window.isOpen()) {
-
-
 		ManuelSpawnFlag = true;
-
 		sUserInput();
 
 		if (IsRunning) {
@@ -370,8 +374,8 @@ void MenuScene::update() {
 			sSpawner();
 			sMovement();
 			sRender();
+      sButtonClicked();
 		}
-	}
 
 }
 

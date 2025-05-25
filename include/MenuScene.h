@@ -62,11 +62,15 @@ class MenuScene : public Scene {
     void sUserInput();
     void sLifeSpan();
     void sSpecialShoot();
+    void sButtonClicked();
     
     void SpawnMenuButtons();
-    void SpawnButton(float width, float height, float  x, float y, float outlineThickness,
-         sf::Color outlineColor, sf::Color fillColor );
-
+  
+    void SpawnButton(
+        float width, float height, float x, float y,
+        float outlineThickness, sf::Color outlineColor, sf::Color fillColor,
+        std::function<void()> onClickFunc
+    );
 
 
 public:

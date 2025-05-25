@@ -357,9 +357,6 @@ void PlayScene::sShoot()
 //public methods
 void PlayScene::update() {
 
-	while (window.isOpen()) {
-
-
 		ManuelSpawnFlag = true;
 
 		sUserInput();
@@ -370,8 +367,9 @@ void PlayScene::update() {
 			sSpawner();
 			sMovement();
 			sRender();
+      sShoot();
+      sSpecialShoot();
 		}
-	}
 
 }
 

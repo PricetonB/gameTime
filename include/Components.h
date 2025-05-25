@@ -1,6 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <functional>
+
+
 
 class CTransform {
 public:
@@ -139,3 +142,10 @@ public:
     CButton(float left, float right, float top, float bottom, std::function<void()> onClickFunc)
         : LeftSide(left), RightSide(right), TopSide(top), BottomSide(bottom), onClick(onClickFunc) {}
 };
+
+
+
+
+
+
+

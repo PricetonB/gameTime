@@ -17,6 +17,7 @@ Game::Game(const std::string& configFile) {
 }
 
 std::unique_ptr<Scene> Game::createScene(const std::string& name) {
+    std::cout << "in game changing to: " << name << "\n";
     if (name == "menu") return std::make_unique<MenuScene>(Window);
     if (name == "play") return std::make_unique<PlayScene>(Window);
     if (name == "multiplayer") return std::make_unique<MultiplayerScene>(Window);
@@ -24,11 +25,13 @@ std::unique_ptr<Scene> Game::createScene(const std::string& name) {
 }
 
 void Game::run() {
-    while (currentScene) {
+    while (Window.isOpen() && currentScene) {
         currentScene->update();
         std::string next = currentScene->nextScene();
         if (!next.empty()) {
+            std::cout << "calling current scene in game run due to next empty" "\n";
             currentScene = createScene(next);
+            
         }
     }
 }

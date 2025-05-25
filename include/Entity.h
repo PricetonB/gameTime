@@ -21,6 +21,7 @@ public:
 	std::shared_ptr<CSpecialShoot> cSpecialShoot     = nullptr;
 	std::shared_ptr<CShoot>        cShoot            = nullptr;
 	std::shared_ptr<CRectangle>    cRectangle        = nullptr;
+  std::shared_ptr<CButton>       cButton     = nullptr;
 
 	void Destroy();
 	const std::string & GetTag() const;
