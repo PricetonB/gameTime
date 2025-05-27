@@ -29,6 +29,13 @@ void MenuScene::_changeScene(std::string sceneName) {
 
 void MenuScene::Init(const std::string& _configFile)
 {
+
+  if (!Font.openFromFile("../../src/fonts/arial.ttf"))
+{
+    std::cout << "error in menuscene finding font file \n";
+}
+  std::cout << "font after checking: " << Font.getInfo().family << "\n";
+
 	GameFrameCount = 0;
 	IsRunning = true;
 	
@@ -171,6 +178,7 @@ void MenuScene::SpawnButton(
     float bottom = y + height;
 
     button->cButton = std::make_shared<CButton>(left, right, top, bottom, onClickFunc);
+    button->cText = std::make_shared<CText>(Font, "START GAME", 24);
 }
 
 
@@ -184,7 +192,6 @@ void MenuScene::SpawnPlayer()
 }
 
 //--------------------------------------------
-
 
 void MenuScene::sMovement()
 {
@@ -218,6 +225,15 @@ void MenuScene::sRender()
 			
 
 		}
+    if (e->cText != nullptr)
+    {
+      sf::Vector2f offset(20.f, 20.f);
+      e->cText->Text.setPosition(e->cTransform->Position + offset);
+      e->cText->Text.setRotation(sf::degrees(e->cTransform->Angle));
+      window.draw(e->cText->Text);
+
+
+    }
 	}
 	window.display();
 }

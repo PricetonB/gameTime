@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <functional>
 
@@ -26,7 +27,7 @@ public:
 		Shape.setFillColor(fillColor);
 		Shape.setOutlineColor(outlineColor);
 		Shape.setOutlineThickness(thickness);
-		Shape.setOrigin(sf::Vector2f(radius, radius));  // Correct way to set the origin with a Vector2f
+		//Shape.setOrigin(sf::Vector2f(radius, radius));  // Correct way to set the origin with a Vector2f
 
 	}
 };
@@ -44,7 +45,7 @@ public:
         Rectangle.setFillColor(fillColor);
         Rectangle.setOutlineColor(outlineColor);
         Rectangle.setOutlineThickness(thickness);
-        Rectangle.setOrigin(sf::Vector2f(width,height));  // Center origin
+        //Rectangle.setOrigin(sf::Vector2f(width,height));  // Center origin
     }
 };
 
@@ -52,6 +53,26 @@ public:
 
 //=============================================================
 
+
+class CText {
+public:
+  sf::Text Text;
+
+  CText(const sf::Font& font, const std::string& textString, int fontSize)
+  :Text(font)
+{
+    Text.setCharacterSize(fontSize);
+    Text.setString(textString);
+    Text.setFillColor(sf::Color(255,255,255));
+
+  }
+
+
+
+
+};
+
+//=============================================================
 
 
 class CScore {

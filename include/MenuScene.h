@@ -29,6 +29,8 @@ class MenuScene : public Scene {
     EnemySpecsStr EnemySpecs;
     BulletSpecsStr BulletSpecs;
 
+    sf::Font Font;
+
     SinglePlayerButtonSpecsStr SinglePlayerButtonSpecs;
     
     EntityPtr Player;
@@ -38,6 +40,7 @@ class MenuScene : public Scene {
     size_t GameFrameCount;
     
     sf::Clock DeltaClock;
+
     
     uint16_t SpawnInterval;
     bool ManuelSpawnFlag;
