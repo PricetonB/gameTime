@@ -27,7 +27,7 @@ public:
 		Shape.setFillColor(fillColor);
 		Shape.setOutlineColor(outlineColor);
 		Shape.setOutlineThickness(thickness);
-		//Shape.setOrigin(sf::Vector2f(radius, radius));  // Correct way to set the origin with a Vector2f
+		Shape.setOrigin(sf::Vector2f(radius, radius));  // Correct way to set the origin with a Vector2f
 
 	}
 };

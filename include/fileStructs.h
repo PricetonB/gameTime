@@ -64,4 +64,13 @@ struct SinglePlayerButtonSpecsStr {
 	sf::Color FillColor;
 };
 
+struct MultiPlayerButtonSpecsStr {
+	uint16_t Width;
+	uint16_t Height;
+	uint16_t X;
+	uint16_t Y;
+	uint16_t OutlineThickness;
+	sf::Color OutlineColor;
+	sf::Color FillColor;
+};
 #endif

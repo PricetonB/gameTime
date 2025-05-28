@@ -1,10 +1,12 @@
 #include "MenuScene.h"
+#include <SFML/System/Vector2.hpp>
 #include <iostream>
 //#include <limits>
 #include <fstream>
 //#include <sstream>
 #include <iostream>
 #include <filesystem>
+#include <memory>
 
 
 
@@ -76,6 +78,28 @@ void MenuScene::Init(const std::string& _configFile)
 			SinglePlayerButtonSpecs.OutlineColor.b = static_cast<uint8_t>(b);
 		}
 
+		if (identifier == "MultiPlayerButton") {
+			input >> MultiPlayerButtonSpecs.Width;
+			input >> MultiPlayerButtonSpecs.Height;
+			input >> MultiPlayerButtonSpecs.X;
+			input >> MultiPlayerButtonSpecs.Y;
+			input >> MultiPlayerButtonSpecs.OutlineThickness;
+			int r, g, b;
+			input >> r;
+			input >> g;
+			input >> b;
+			MultiPlayerButtonSpecs.FillColor.r = static_cast<uint8_t>(r);
+			MultiPlayerButtonSpecs.FillColor.g = static_cast<uint8_t>(g);
+			MultiPlayerButtonSpecs.FillColor.b = static_cast<uint8_t>(b);
+			input >> r;
+			input >> g;
+			input >> b;
+			MultiPlayerButtonSpecs.OutlineColor.r = static_cast<uint8_t>(r);
+			MultiPlayerButtonSpecs.OutlineColor.g = static_cast<uint8_t>(g);
+			MultiPlayerButtonSpecs.OutlineColor.b = static_cast<uint8_t>(b);
+		}
+
+
 
 		
 		if (identifier == "Player") {
@@ -135,7 +159,8 @@ void MenuScene::Init(const std::string& _configFile)
 
 	}
 	SpawnPlayer();
-    SpawnMenuButtons();
+  SpawnMenuButtons();
+  SpawnTitle();
 	std::cout << "spawn interval: " << EnemySpecs.SpawnInterval << "\n";
 }
 
@@ -153,6 +178,15 @@ void MenuScene::SpawnMenuButtons() {
         SinglePlayerButtonSpecs.FillColor,
         [this]() {
             _changeScene("play");
+        }
+    );
+    SpawnButton(
+        MultiPlayerButtonSpecs.Width, MultiPlayerButtonSpecs.Height,
+        MultiPlayerButtonSpecs.X, MultiPlayerButtonSpecs.Y,
+        MultiPlayerButtonSpecs.OutlineThickness, MultiPlayerButtonSpecs.OutlineColor,
+        MultiPlayerButtonSpecs.FillColor,
+        [this]() {
+            _changeScene("multiplayer");
         }
     );
 }
@@ -180,6 +214,19 @@ void MenuScene::SpawnButton(
     button->cButton = std::make_shared<CButton>(left, right, top, bottom, onClickFunc);
     button->cText = std::make_shared<CText>(Font, "START GAME", 24);
 }
+
+
+//---------------------------------------------
+
+void MenuScene::SpawnTitle() {
+
+  auto title = EntityManager.AddEntity("Title");
+
+  sf::Vector2f titlePosition{500.f, 100.f};
+  title->cTransform = std::make_shared<CTransform>(titlePosition, sf::Vector2f(0.0f, 0.0f), 0.0f);
+  title->cText = std::make_shared<CText>(Font, "SPACE WARS", 36);
+}
+
 
 
 //---------------------------------------------

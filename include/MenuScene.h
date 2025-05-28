@@ -32,6 +32,7 @@ class MenuScene : public Scene {
     sf::Font Font;
 
     SinglePlayerButtonSpecsStr SinglePlayerButtonSpecs;
+    MultiPlayerButtonSpecsStr MultiPlayerButtonSpecs;
     
     EntityPtr Player;
     
@@ -68,7 +69,7 @@ class MenuScene : public Scene {
     void sButtonClicked();
     
     void SpawnMenuButtons();
-  
+    void SpawnTitle();
     void SpawnButton(
         float width, float height, float x, float y,
         float outlineThickness, sf::Color outlineColor, sf::Color fillColor,
